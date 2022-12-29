@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductModel;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ProductController extends Controller
 {
@@ -31,7 +32,12 @@ class ProductController extends Controller
             'slug' => 'required',
             'price' => 'required',
         ]);
-        return ProductModel::create($request->all());
+        $prod = ProductModel::create($request->all());
+        
+        return Response([
+            'item' => $prod,
+            'msg' => 'Item Created!',
+        ], 201);
     }
 
     /**
@@ -42,7 +48,6 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
         return ProductModel::find($id);
     }
 
@@ -57,7 +62,11 @@ class ProductController extends Controller
     {
         $prod = ProductModel::find($id);
         $prod->update($request->all());
-        return $prod;
+        
+        return Response([
+            'item' => $prod,
+            'msg' => 'Item Updated',
+        ], 201);
     }
 
     /**
@@ -68,11 +77,20 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        return ProductModel::destroy($id);
+        $prod = ProductModel::destroy($id);
+        return Response([
+            'item' => $prod,
+            'msg' => 'Item Deleted!',
+        ], 201);
     }
 
     public function search($name) 
     {
-        return ProductModel::where('name', 'like', '%'.$name.'%')->get();
+        $prod = ProductModel::where('name', 'like', '%'.$name.'%')->get();
+        return Response([
+            'item' => $prod,
+            'msg' => 'Search Result',
+            'count' => $prod->count(),
+        ]);
     }
 }
